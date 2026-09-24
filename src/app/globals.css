@@ -1,0 +1,242 @@
+@import "tailwindcss";
+
+:root {
+  --background: #fffbeb;
+  --foreground: #123b46;
+  --muted: #4d6a70;
+  --mint: #33f5cc;
+  --mint-deep: #12c4a0;
+  --sun: #efe918;
+  --ink: #123b46;
+  --ink-soft: #2a555c;
+  --cream: #fffbeb;
+  --card: #ffffff;
+  --border: #b7ece0;
+  --success: #1f9d6a;
+  --danger: #c23b2e;
+  --school-teal: #123b46;
+  --school-teal-dark: #123b46;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-mint: var(--mint);
+  --color-sun: var(--sun);
+  --color-ink: var(--ink);
+  --color-muted: var(--muted);
+  --color-border: var(--border);
+  --color-cream: var(--cream);
+  --font-sans: var(--font-vazir), Tahoma, Arial, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  --radius-sm: 10px;
+  --radius-md: 16px;
+  --radius-lg: 24px;
+  --radius-xl: 32px;
+}
+
+html {
+  color-scheme: light;
+  overflow-x: hidden;
+}
+
+body {
+  min-height: 100%;
+  min-height: 100dvh;
+  color: var(--ink);
+  font-family: var(--font-vazir), Tahoma, Arial, sans-serif;
+  background-color: var(--cream);
+  overflow-x: hidden;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+@layer base {
+  button:not(:disabled),
+  [role="button"]:not(:disabled) {
+    cursor: pointer;
+  }
+}
+
+.school-hero-bg {
+  background: var(--cream);
+}
+
+.school-shell {
+  position: relative;
+}
+
+.h-display {
+  font-size: clamp(1.5rem, 1.2rem + 2.2vw, 2.7rem);
+  font-weight: 800;
+  line-height: 1.25;
+  color: var(--ink);
+}
+
+.h-section {
+  font-size: 1.2rem;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--ink);
+}
+
+.body-relaxed {
+  font-size: 0.95rem;
+  line-height: 2;
+}
+
+.school-card,
+.dash-card {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 10px 28px rgba(18, 59, 70, 0.07);
+  border-radius: 1.5rem;
+  padding: 1.1rem;
+}
+
+.school-card-mint {
+  background: var(--mint);
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, var(--mint));
+  color: var(--ink);
+  box-shadow: 0 10px 28px rgba(18, 59, 70, 0.08);
+}
+
+.school-card-sun {
+  background: var(--sun);
+  border: 1px solid color-mix(in oklab, var(--ink) 12%, var(--sun));
+  color: var(--ink);
+  box-shadow: 0 10px 28px rgba(18, 59, 70, 0.08);
+}
+
+.school-card-ink {
+  background: var(--ink);
+  border: 1px solid var(--ink);
+  color: #fff;
+  box-shadow: 0 10px 28px rgba(18, 59, 70, 0.12);
+}
+
+.school-frame {
+  background: var(--card);
+  border: 1px solid var(--border);
+  box-shadow: 0 8px 24px rgba(18, 59, 70, 0.06);
+}
+
+.btn-primary {
+  background: var(--sun);
+  color: var(--ink);
+  border: 0;
+  min-height: 44px;
+  font-weight: 800;
+}
+
+.btn-primary:hover {
+  filter: brightness(0.97);
+}
+
+.btn-secondary {
+  background: #fff;
+  color: var(--ink);
+  border: 1px solid var(--border);
+  min-height: 44px;
+}
+
+.field {
+  background: #fff;
+  border: 1px solid var(--border);
+  min-height: 44px;
+  font-size: 16px;
+  color: var(--ink);
+}
+
+.role-pill {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 999px;
+  background: var(--mint);
+  color: var(--ink);
+  padding: 0.15rem 0.7rem;
+  font-size: 0.75rem;
+  font-weight: 800;
+}
+
+.logo-blend {
+  background: #fff;
+  padding: 0.35rem;
+  border-radius: 9999px;
+  border: 3px solid var(--sun);
+}
+
+.imath-banner {
+  background: var(--sun);
+  border: 1px solid color-mix(in oklab, var(--ink) 14%, var(--sun));
+  color: var(--ink);
+  box-shadow: 0 8px 24px rgba(18, 59, 70, 0.08);
+}
+
+.imath-ribbon {
+  position: absolute;
+  top: 14px;
+  inset-inline-start: -8px;
+  transform: rotate(-12deg);
+  background: var(--ink);
+  color: var(--sun);
+  font-size: 0.7rem;
+  font-weight: 800;
+  padding: 0.25rem 1.2rem;
+}
+
+@media (min-width: 768px) {
+  .imath-ribbon {
+    inset-inline-start: -34px;
+    transform: rotate(-40deg);
+    padding: 0.25rem 2.4rem;
+  }
+}
+
+input,
+select,
+textarea,
+button {
+  font-size: 16px;
+}
+
+a,
+button {
+  touch-action: manipulation;
+}
+
+:focus-visible {
+  outline: 3px solid var(--ink);
+  outline-offset: 3px;
+}
+
+.empty {
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.8;
+}
+
+.dash-card h2 {
+  font-size: 1.05rem;
+  font-weight: 700;
+  margin-bottom: 0.6rem;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  * {
+    transition: none !important;
+    animation: none !important;
+  }
+}
+
+[data-lk-theme] {
+  --lk-bg: #fffbeb;
+  --lk-bg2: #e7fff8;
+  --lk-bg3: #fff;
+  --lk-fg: #123b46;
+  --lk-fg5: #12c4a0;
+  --lk-accent-bg: #efe918;
+  --lk-accent-fg: #123b46;
+  --lk-border-color: #b7ece0;
+  --lk-control-fg: #123b46;
+  --lk-control-bg: #fff;
+}
