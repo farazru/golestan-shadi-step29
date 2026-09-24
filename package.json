@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
+    "preflight": "node scripts/preflight.mjs",
     "dev": "next dev --hostname 0.0.0.0 --port 8080",
-    "build": "next build",
+    "build": "node scripts/preflight.mjs && next build",
     "start": "next start --hostname 0.0.0.0 --port 8080",
     "lint": "eslint",
     "db:generate": "drizzle-kit generate",
-    "db:migrate": "drizzle-kit migrate",
+    "db:migrate": "node scripts/db-migrate.mjs",
     "db:push": "drizzle-kit push"
   },
   "dependencies": {

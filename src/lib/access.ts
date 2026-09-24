@@ -85,7 +85,34 @@ export function parseScore(raw: unknown) {
 }
 
 export function isIsoDay(value: string) {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(value)) return false;
-  const d = new Date(value + "T12:00:00");
-  return !Number.isNaN(d.getTime());
+  const match = /^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+  if (!match) return false;
+  const year = Number(match[1]);
+  const month = Number(match[2]);
+  const day = Number(match[3]);
+  const date = new Date(Date.UTC(year, month - 1, day));
+  return date.getUTCFullYear() === year && date.getUTCMonth() === month - 1 && date.getUTCDate() === day;
+}
+
+export function parseToman(raw: unknown, max = 500_000_000) {
+  const n = Number(raw);
+  if (!Number.isFinite(n) || !Number.isInteger(n) || n <= 0 || n > max) return null;
+  return n;
+}
+
+export async function enrolledCourseIds(studentIds: string[]) {
+  if (studentIds.length === 0) return [];
+  const rows = await db
+    .select({ courseId: enrollments.courseId })
+    .from(enrollments)
+    .where(inArray(enrollments.studentId, studentIds));
+  return [...new Set(rows.map((row) => row.courseId))];
+}
+
+export async function canViewUserMedia(viewer: { id: string; role: string }, targetId: string) {
+  if (viewer.id === targetId) return true;
+  if (isOffice(viewer.role)) return true;
+  if (viewer.role === "parent") return approvedParentOf(viewer.id, targetId);
+  if (viewer.role === "teacher") return teacherOwnsStudent(viewer.id, targetId);
+  return false;
 }

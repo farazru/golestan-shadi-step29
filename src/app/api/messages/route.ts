@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { desc, eq } from "drizzle-orm";
+import { desc, eq, inArray } from "drizzle-orm";
 import { db } from "@/db";
 import { messages, courses, enrollments, user } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
+import { approvedChildIds, isOffice } from "@/lib/access";
 
 function canSend(role: string) {
-  return role === "teacher" || role === "manager";
+  return role === "teacher" || isOffice(role);
 }
 
 export async function GET() {
@@ -31,7 +32,7 @@ export async function GET() {
     .leftJoin(courses, eq(messages.courseId, courses.id))
     .orderBy(desc(messages.createdAt));
 
-  if (session.user.role === "manager") {
+  if (isOffice(session.user.role)) {
     return NextResponse.json({ messages: rows });
   }
 
@@ -44,6 +45,34 @@ export async function GET() {
     return NextResponse.json({
       messages: rows.filter((m) => m.courseId == null || ids.has(m.courseId)),
     });
+  }
+
+  if (session.user.role === "parent") {
+    const childIds = await approvedChildIds(session.user.id);
+    if (childIds.length === 0) {
+      return NextResponse.json({ messages: rows.filter((m) => m.courseId == null), children: [] });
+    }
+    const links = await db
+      .select({ courseId: enrollments.courseId, studentId: enrollments.studentId, name: user.firstName })
+      .from(enrollments)
+      .innerJoin(user, eq(enrollments.studentId, user.id))
+      .where(inArray(enrollments.studentId, childIds));
+    const ids = new Set(links.map((row) => row.courseId));
+    return NextResponse.json({
+      children: [...new Map(links.map((row) => [row.studentId, { id: row.studentId, name: row.name }])).values()],
+      messages: rows
+        .filter((m) => m.courseId == null || ids.has(m.courseId))
+        .map((m) => ({
+          ...m,
+          forChildren: m.courseId == null
+            ? links.map((row) => row.name)
+            : links.filter((row) => row.courseId === m.courseId).map((row) => row.name),
+        })),
+    });
+  }
+
+  if (session.user.role !== "student") {
+    return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });
   }
 
   const mine = await db

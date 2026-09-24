@@ -42,6 +42,9 @@ yarn-error.log*
 # private student files
 /data/private/karnameh/
 /data/private/avatars/
+/data/private/submissions/
+/public/uploads/
+/public/*.zip
 
 # vercel
 .vercel

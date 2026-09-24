@@ -48,6 +48,7 @@ export async function DELETE(request: NextRequest) {
     return NextResponse.json({ error: "id الزامی است." }, { status: 400 });
   }
 
-  await db.delete(publicNews).where(eq(publicNews.id, id));
+  const removed = await db.delete(publicNews).where(eq(publicNews.id, id)).returning();
+  if (removed.length === 0) return NextResponse.json({ error: "پیدا نشد." }, { status: 404 });
   return NextResponse.json({ success: true });
 }

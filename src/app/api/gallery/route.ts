@@ -77,6 +77,7 @@ export async function DELETE(request: NextRequest) {
   }
 
   const [existing] = await db.select().from(galleryItems).where(eq(galleryItems.id, id));
+  if (!existing) return NextResponse.json({ error: "پیدا نشد." }, { status: 404 });
   await db.delete(galleryItems).where(eq(galleryItems.id, id));
 
   // Best-effort cleanup of the actual file on disk — don't fail the

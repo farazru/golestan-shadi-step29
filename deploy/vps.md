@@ -17,10 +17,15 @@ cp .env.example .env.local
 nano .env.local
 # BETTER_AUTH_SECRET
 # BETTER_AUTH_URL=https://golestanshadi.ir
-mkdir -p data/private/avatars data/private/karnameh
-npx drizzle-kit push
+mkdir -p data/private/avatars data/private/karnameh data/private/submissions
+# BETTER_AUTH_SECRET must be at least 32 random characters.
+# openssl rand -base64 32
+# BETTER_AUTH_URL=https://golestanshadi.ir
+npm run preflight
+npm run db:migrate
 npm install
 npm run build
+
 ```
 
 اجرا (برای تست):
@@ -52,4 +57,5 @@ server {
 }
 ```
 
-هر هفته `data/school.db` و پوشه `data/private` را روی فلش کپی کنید. مدیر از داشبورد هم می‌تواند پشتیبان بگیرد.
+هر هفته `data/school.db` و پوشه `data/private` را رمزنگاری‌شده کپی کنید. بازیابی را یک بار روی یک پوشه خالی امتحان کنید: فایل دیتابیس و `avatars`، `karnameh`، `submissions` باید با هم برگردند. از داشبورد مدیر هم پشتیبان بگیرید. این فایل‌ها اطلاعات دانش‌آموز است؛ روی فضای عمومی نگذارید.
+

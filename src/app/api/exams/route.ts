@@ -1,9 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import { eq, inArray } from "drizzle-orm";
+import { eq, inArray, isNull, or } from "drizzle-orm";
 import { db } from "@/db";
 import { exams, courses } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
-import { isOffice, teacherOwnsCourse } from "@/lib/access";
+import { approvedChildIds, enrolledCourseIds, isIsoDay, isOffice, teacherOwnsCourse } from "@/lib/access";
 
 export async function GET() {
   const session = await getSession();
@@ -22,7 +22,20 @@ export async function GET() {
     return NextResponse.json({ exams: rows });
   }
 
-  const rows = await db.select().from(exams);
+  const studentIds =
+    session.user.role === "parent" ? await approvedChildIds(session.user.id) : [session.user.id];
+  if (session.user.role !== "student" && session.user.role !== "parent") {
+    return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });
+  }
+  const courseIds = await enrolledCourseIds(studentIds);
+  if (courseIds.length === 0) {
+    const schoolWide = await db.select().from(exams).where(isNull(exams.courseId));
+    return NextResponse.json({ exams: schoolWide });
+  }
+  const rows = await db
+    .select()
+    .from(exams)
+    .where(or(isNull(exams.courseId), inArray(exams.courseId, courseIds)));
   return NextResponse.json({ exams: rows });
 }
 
@@ -35,8 +48,12 @@ export async function POST(request: NextRequest) {
   const day = typeof body?.day === "string" ? body.day.trim() : "";
   const note = typeof body?.note === "string" ? body.note.trim() : "";
   const courseId = body?.courseId ? Number(body.courseId) : null;
-  if (!title || !day) {
-    return NextResponse.json({ error: "عنوان و تاریخ الزامی است." }, { status: 400 });
+  if (!title || !isIsoDay(day)) {
+    return NextResponse.json({ error: "عنوان و تاریخ معتبر (YYYY-MM-DD) الزامی است." }, { status: 400 });
+  }
+  if (courseId) {
+    const course = await db.query.courses.findFirst({ where: eq(courses.id, courseId) });
+    if (!course) return NextResponse.json({ error: "دوره پیدا نشد." }, { status: 404 });
   }
 
   if (isOffice(session.user.role)) {

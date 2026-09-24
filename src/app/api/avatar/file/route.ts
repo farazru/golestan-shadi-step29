@@ -6,6 +6,7 @@ import { db } from "@/db";
 import { user } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
 import { sniffUpload } from "@/lib/file-magic";
+import { canViewUserMedia } from "@/lib/access";
 
 function dir() {
   return path.join(process.cwd(), "data", "private", "avatars");
@@ -15,14 +16,22 @@ export async function GET(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "وارد شوید." }, { status: 401 });
   const id = request.nextUrl.searchParams.get("id") || session.user.id;
+  if (!(await canViewUserMedia(session.user, id))) {
+    return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });
+  }
   const row = await db.query.user.findFirst({ where: eq(user.id, id) });
   if (!row?.image || !row.image.startsWith("file:")) {
     return NextResponse.json({ error: "عکس نیست." }, { status: 404 });
   }
   const stored = row.image.slice(5);
   const buf = await readFile(path.join(dir(), stored));
+  const type = stored.endsWith(".png") ? "image/png" : stored.endsWith(".webp") ? "image/webp" : "image/jpeg";
   return new NextResponse(new Uint8Array(buf), {
-    headers: { "Content-Type": "image/jpeg", "Cache-Control": "private, max-age=3600" },
+    headers: {
+      "Content-Type": type,
+      "X-Content-Type-Options": "nosniff",
+      "Cache-Control": "private, max-age=3600",
+    },
   });
 }
 

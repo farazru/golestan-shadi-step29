@@ -31,10 +31,15 @@ const roleLabel: Record<string, string> = {
   deputy: "معاون",
 };
 
-export default async function DashboardPage() {
+export default async function DashboardPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ child?: string }>;
+}) {
   const session = await getSession();
   if (!session) redirect("/login");
   const { user: me } = session;
+  const selectedChild = (await searchParams).child;
 
   return (
     <>
@@ -54,7 +59,7 @@ export default async function DashboardPage() {
       {me.role === "student" ? <StudentView studentId={me.id} grade={me.grade ?? null} /> : null}
       {me.role === "teacher" ? <TeacherView teacherId={me.id} /> : null}
       {me.role === "manager" ? <ManagerView /> : null}
-      {me.role === "parent" ? <ParentView parentId={me.id} /> : null}
+      {me.role === "parent" ? <ParentView parentId={me.id} selectedChild={selectedChild} /> : null}
       {me.role === "deputy" ? <DeputyView /> : null}
 
       <p className="rounded-2xl border border-[#D9E7E5] bg-white px-4 py-3 text-sm leading-7">
@@ -268,6 +273,12 @@ async function TeacherView({ teacherId }: { teacherId: string }) {
 
   return (
     <div className="flex flex-col gap-8">
+      <nav className="grid grid-cols-2 gap-2 text-sm">
+        <a href="#attendance" className="school-card p-3 font-bold">حضور</a>
+        <a href="#homework" className="school-card p-3 font-bold">تکالیف</a>
+        <a href="#grades" className="school-card p-3 font-bold">نمره‌ها</a>
+        <a href="#news" className="school-card p-3 font-bold">اطلاعیه‌ها</a>
+      </nav>
       <p className="empty">امروز: حضور را بزنید، تکالیف را نمره دهید، بعد دوره بسازید.</p>
       <section className="flex flex-col gap-4">
         <h2 className="text-lg font-semibold">دوره‌های من</h2>
@@ -296,14 +307,22 @@ async function TeacherView({ teacherId }: { teacherId: string }) {
         )}
       </section>
 
+      <div id="attendance">
       <TeacherAttendancePanel courses={attendanceCourses} />
+      </div>
+      <div id="homework">
       <HomeworkPanel canCreate courses={allCoursesForPanel} />
+      </div>
+      <div id="grades">
       <GradesPanel
         canEdit
         courses={allCoursesForPanel}
         students={Object.values(rosterByCourse).flat()}
       />
+      </div>
+      <div id="news">
       <AnnouncementsPanel canSend canSendSchoolWide={false} courses={allCoursesForPanel} />
+      </div>
       <UnenrolledStudentsPanel courses={allCoursesForPanel} />
       <CreateCourseForm role="teacher" />
     </div>
@@ -330,10 +349,16 @@ async function ManagerView() {
   return (
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-2 gap-3 text-sm">
+        <a href="#attendance" className="school-card p-4 font-bold">حضور</a>
+        <a href="#parents" className="school-card p-4 font-bold">پیوند ولی</a>
+        <a href="/tuition" className="school-card p-4 font-bold">شهریه</a>
+        <a href="#reports" className="school-card p-4 font-bold">کارنامه و چاپ</a>
         <div className="school-card p-4">دوره‌ها: {allCourses.length}</div>
         <div className="school-card p-4">دانش‌آموزان: {students.length}</div>
       </div>
+      <div id="reports">
       <KarnamehPanel canUpload students={students} />
+      </div>
       <CreateInviteForm />
 
       <CreateCourseForm role="manager" />
@@ -365,14 +390,18 @@ async function ManagerView() {
         </ul>
       </section>
 
+      <div id="attendance">
       <ManagerAttendancePanel />
+      </div>
       <IncompletePanel />
       <OfficePanel />
       <HomeworkPanel canCreate courses={allCoursesForPanel} />
       <AnnouncementsPanel canSend canSendSchoolWide courses={allCoursesForPanel} />
       <UnenrolledStudentsPanel courses={allCoursesForPanel} />
       <DisciplineLookup />
+      <div id="parents">
       <ParentLinksPanel />
+      </div>
       <ContentManagementPanel />
       <p className="text-sm">
         <Link href="/print/attendance" className="underline">چاپ حضور و غیاب</Link>
@@ -383,22 +412,42 @@ async function ManagerView() {
   );
 }
 
-async function ParentView({ parentId }: { parentId: string }) {
+async function ParentView({ parentId, selectedChild }: { parentId: string; selectedChild?: string }) {
   const links = await db
     .select()
     .from(parentLinks)
     .where(and(eq(parentLinks.parentId, parentId), eq(parentLinks.status, "approved")));
-  const child = links[0];
-  if (!child) {
+  if (links.length === 0) {
     return (
       <p className="empty">هنوز فرزندی تأیید نشده. کد ملی دانش‌آموز را به دفتر بدهید.</p>
     );
   }
-  const stu = await db.query.user.findFirst({ where: eq(user.id, child.studentId) });
+  const allChildren = [];
+  for (const link of links) {
+    const stu = await db.query.user.findFirst({ where: eq(user.id, link.studentId) });
+    if (stu) allChildren.push(stu);
+  }
+  const child = allChildren.find((stu) => stu.id === selectedChild) ?? allChildren[0];
+  if (!child) {
+    return <p className="empty">هنوز فرزندی تأیید نشده. کد ملی دانش‌آموز را به دفتر بدهید.</p>;
+  }
   return (
     <div className="flex flex-col gap-6">
+      {allChildren.length > 1 ? (
+        <nav className="flex flex-wrap gap-2">
+          {allChildren.map((stu) => (
+            <a
+              key={stu.id}
+              href={`/dashboard?child=${stu.id}`}
+              className={`rounded-full px-4 py-2 text-sm font-bold ${stu.id === child.id ? "bg-ink text-white" : "school-card"}`}
+            >
+              {stu.firstName} {stu.lastName}
+            </a>
+          ))}
+        </nav>
+      ) : null}
       <p className="empty">نمای دانش‌آموز برای فرزند تأییدشده. کلاس زنده برای ولی باز نیست.</p>
-      <StudentView studentId={child.studentId} grade={stu?.grade ?? null} parentMode />
+      <StudentView studentId={child.id} grade={child.grade ?? null} parentMode />
     </div>
   );
 }

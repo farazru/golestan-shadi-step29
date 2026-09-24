@@ -3,12 +3,13 @@ import { and, eq, gte, lte, desc } from "drizzle-orm";
 import { db } from "@/db";
 import { attendance, classSessions, courses, enrollments, user } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
+import { isEnrolled, isOffice, requireStudentAccount } from "@/lib/access";
 import { academicYearRange, todayIsoDate } from "@/lib/semester";
 
 const STATUSES = ["present", "absent", "late"] as const;
 
 function canStaff(role: string) {
-  return role === "teacher" || role === "manager";
+  return role === "teacher" || isOffice(role);
 }
 
 // Teacher/manager marks a student, or a student self-reports present on join.
@@ -66,6 +67,13 @@ export async function POST(request: NextRequest) {
     }
     if (session.user.role === "teacher" && course.teacherId !== session.user.id) {
       return NextResponse.json({ error: "فقط معلم همین دوره می‌تواند حضور را ثبت کند." }, { status: 403 });
+    }
+    const student = await requireStudentAccount(studentId);
+    if (!student) {
+      return NextResponse.json({ error: "دانش‌آموز پیدا نشد." }, { status: 404 });
+    }
+    if (!(await isEnrolled(studentId, course.id))) {
+      return NextResponse.json({ error: "این دانش‌آموز در این دوره نیست." }, { status: 403 });
     }
   } else {
     return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });

@@ -4,6 +4,8 @@ import { db } from "@/db";
 import { parentLinks, tuitionAccounts, tuitionPayments } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
 import { TUITION_MONTHS, isTuitionClass } from "@/lib/school";
+import { parseToman, requireStudentAccount } from "@/lib/access";
+import { logAction } from "@/lib/audit";
 
 function canEdit(role?: string) {
   return role === "manager" || role === "deputy";
@@ -46,29 +48,36 @@ export async function POST(request: NextRequest) {
   if (body?.kind === "account") {
     const fullName = String(body.fullName ?? "").trim();
     const classGroup = String(body.classGroup ?? "");
-    const feeToman = Number(body.feeToman) || 0;
-    if (!fullName || !isTuitionClass(classGroup) || feeToman <= 0) {
-      return NextResponse.json({ error: "نام، کلاس و شهریه لازم است." }, { status: 400 });
+    const feeToman = parseToman(body.feeToman);
+    const studentId = typeof body.studentId === "string" ? body.studentId : "";
+    if (!fullName || !isTuitionClass(classGroup) || feeToman == null) {
+      return NextResponse.json({ error: "نام، کلاس و شهریه معتبر لازم است." }, { status: 400 });
     }
+    if (!studentId) {
+      return NextResponse.json({ error: "دانش‌آموز الزامی است." }, { status: 400 });
+    }
+    const student = await requireStudentAccount(studentId);
+    if (!student) return NextResponse.json({ error: "دانش‌آموز پیدا نشد." }, { status: 404 });
     const [row] = await db
       .insert(tuitionAccounts)
       .values({
         fullName,
         classGroup,
         feeToman,
-        studentId: body.studentId || null,
+        studentId,
         note: body.note || null,
       })
       .returning();
+    await logAction(session.user.id, "tuition_account", `${row.id}:${studentId}:${feeToman}`);
     return NextResponse.json({ account: row });
   }
   if (body?.kind === "payment") {
     const accountId = Number(body.accountId);
     const monthKey = String(body.monthKey ?? "");
-    const amountToman = Number(body.amountToman) || 0;
+    const amountToman = parseToman(body.amountToman);
     const account = await db.query.tuitionAccounts.findFirst({ where: eq(tuitionAccounts.id, accountId) });
     if (!account) return NextResponse.json({ error: "حساب شهریه پیدا نشد." }, { status: 404 });
-    if (!TUITION_MONTHS.some((m) => m.key === monthKey) || amountToman <= 0) {
+    if (!TUITION_MONTHS.some((m) => m.key === monthKey) || amountToman == null) {
       return NextResponse.json({ error: "ماه یا مبلغ نامعتبر است." }, { status: 400 });
     }
     const dup = await db.query.tuitionPayments.findFirst({
@@ -84,6 +93,7 @@ export async function POST(request: NextRequest) {
         receipt: body.receipt || null,
       })
       .returning();
+    await logAction(session.user.id, "tuition_payment", `${accountId}:${monthKey}:${amountToman}`);
     return NextResponse.json({ payment: row });
   }
   return NextResponse.json({ error: "درخواست نامعتبر." }, { status: 400 });

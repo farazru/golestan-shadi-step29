@@ -23,13 +23,6 @@ export default async function Home() {
   return (
     <div className="school-hero-bg flex min-h-full flex-col">
       <SiteHeader />
-      <a
-        href="/school-platform-step29.zip"
-        download
-        className="mx-auto mt-3 block w-fit rounded-full bg-ink px-5 py-3 text-sm font-extrabold text-white"
-      >
-        دانلود نسخه ۲۹
-      </a>
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-3 py-5 md:gap-6 md:px-4 md:py-8">
         <section className="school-card-mint relative overflow-hidden rounded-[2rem] px-6 pb-6 pt-8 text-center">
           <div className="mx-auto w-fit">

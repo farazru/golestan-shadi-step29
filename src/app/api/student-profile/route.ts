@@ -7,6 +7,7 @@ import { getSession } from "@/lib/get-session";
 import { isGradeLevel } from "@/lib/grades";
 import { profileMissing } from "@/lib/roles";
 import { isOffice, teacherOwnsStudent } from "@/lib/access";
+import { logAction } from "@/lib/audit";
 
 function publicSlice(profile: Record<string, unknown> | null) {
   if (!profile) return null;
@@ -94,23 +95,34 @@ export async function PUT(request: NextRequest) {
     }
   }
 
-  const fields = {
-    dateOfBirth: body?.dateOfBirth || null,
+  const existing = await db.query.studentProfiles.findFirst({
+    where: eq(studentProfiles.studentId, studentId),
+  });
+  const isParent = session.user.role === "parent";
+  const contact = {
     address: body?.address || null,
     studentPhone: body?.studentPhone || null,
     fatherName: body?.fatherName || null,
     fatherPhone: body?.fatherPhone || null,
     motherName: body?.motherName || null,
     motherPhone: body?.motherPhone || null,
-    notes: body?.notes || null,
-    updatedAt: new Date().toISOString(),
   };
+  const fields = isParent
+    ? {
+        ...contact,
+        dateOfBirth: existing?.dateOfBirth ?? null,
+        notes: existing?.notes ?? null,
+        updatedAt: new Date().toISOString(),
+      }
+    : {
+        ...contact,
+        dateOfBirth: body?.dateOfBirth || null,
+        notes: isOffice(session.user.role) ? body?.notes || null : existing?.notes ?? null,
+        updatedAt: new Date().toISOString(),
+      };
   const missing = profileMissing(fields);
   const complete = missing.length === 0;
 
-  const existing = await db.query.studentProfiles.findFirst({
-    where: eq(studentProfiles.studentId, studentId),
-  });
   if (existing) {
     await db.update(studentProfiles).set({ ...fields, complete }).where(eq(studentProfiles.studentId, studentId));
   } else {
@@ -124,5 +136,6 @@ export async function PUT(request: NextRequest) {
     await db.update(user).set({ grade: body.grade.trim() }).where(eq(user.id, studentId));
   }
 
+  await logAction(session.user.id, "profile_update", `${studentId}:${isParent ? "parent-contact" : session.user.role}`);
   return NextResponse.json({ success: true, complete, missing });
 }

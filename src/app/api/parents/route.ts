@@ -83,7 +83,8 @@ export async function PATCH(request: NextRequest) {
   const id = String(body?.id ?? "");
   const status = body?.status === "approved" || body?.status === "rejected" ? body.status : "";
   if (!id || !status) return NextResponse.json({ error: "ناقص." }, { status: 400 });
-  await db.update(parentLinks).set({ status }).where(eq(parentLinks.id, id));
+  const updated = await db.update(parentLinks).set({ status }).where(eq(parentLinks.id, id)).returning();
+  if (updated.length === 0) return NextResponse.json({ error: "پیوند پیدا نشد." }, { status: 404 });
   await logAction(session.user.id, "parent_link_" + status, id);
   return NextResponse.json({ success: true });
 }

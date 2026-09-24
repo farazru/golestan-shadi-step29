@@ -12,6 +12,7 @@ type Message = {
   senderFirstName: string;
   senderLastName: string;
   courseName: string | null;
+  forChildren?: string[];
 };
 
 export function AnnouncementsPanel({
@@ -126,6 +127,7 @@ export function AnnouncementsPanel({
                 {m.senderFirstName} {m.senderLastName}
                 {" · "}
                 {m.courseName ?? "کل مدرسه"}
+                {m.forChildren && m.forChildren.length > 0 ? ` · ${[...new Set(m.forChildren)].join("، ")}` : ""}
                 {m.createdAt ? ` · ${m.createdAt.slice(0, 16).replace("T", " ")}` : ""}
               </p>
             </li>
