@@ -129,11 +129,20 @@ async function StudentView({
   return (
     <div className="flex flex-col gap-8">
       <ProfileBanner />
-      {parentMode ? null : (
+      {parentMode ? (
+        <p className="text-sm">
+          <a href={`/enrollment?studentId=${studentId}`} className="underline">
+            پرونده ثبت‌نام و قرارداد این فرزند
+          </a>
+        </p>
+      ) : (
         <>
-          <p className="text-sm">
+          <p className="flex flex-col gap-1 text-sm">
+            <a href="/enrollment" className="underline">
+              پرونده ثبت‌نام و قرارداد شهریه
+            </a>
             <a href="/profile" className="underline">
-              تکمیل / به‌روزرسانی پرونده و عکس
+              عکس و اطلاعات کوتاه
             </a>
           </p>
           <AvatarPicker />
@@ -351,7 +360,7 @@ async function ManagerView() {
       <div className="grid grid-cols-2 gap-3 text-sm">
         <a href="#attendance" className="school-card p-4 font-bold">حضور</a>
         <a href="#parents" className="school-card p-4 font-bold">پیوند ولی</a>
-        <a href="/tuition" className="school-card p-4 font-bold">شهریه</a>
+        <a href="/enrollment" className="school-card p-4 font-bold">پرونده ثبت‌نام</a>
         <a href="#reports" className="school-card p-4 font-bold">کارنامه و چاپ</a>
         <div className="school-card p-4">دوره‌ها: {allCourses.length}</div>
         <div className="school-card p-4">دانش‌آموزان: {students.length}</div>
@@ -459,7 +468,10 @@ async function DeputyView() {
     .where(eq(user.role, "student"));
   return (
     <div className="flex flex-col gap-8">
-      <p className="empty">پنل معاون: حضور و غیاب، پرونده ناقص، کارنامه، پیوند ولی.</p>
+      <p className="empty">پنل معاون: حضور و غیاب، پرونده ثبت‌نام، کارنامه، پیوند ولی.</p>
+      <p className="text-sm">
+        <Link href="/enrollment" className="underline">پرونده ثبت‌نام و قراردادها</Link>
+      </p>
       <IncompletePanel />
       <ManagerAttendancePanel />
       <KarnamehPanel canUpload students={students} />

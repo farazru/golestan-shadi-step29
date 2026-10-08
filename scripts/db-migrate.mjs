@@ -52,7 +52,18 @@ if (stamped > 0) {
 
 execSync("npx drizzle-kit migrate", { stdio: "inherit" });
 
-const required = ["gallery_items", "calendar_events", "grades", "assignments", "parent_links", "tuition_accounts", "report_cards", "exams"];
+await client.execute(`
+  CREATE TABLE IF NOT EXISTS student_records (
+    id text PRIMARY KEY NOT NULL,
+    student_id text NOT NULL UNIQUE REFERENCES user(id),
+    payload text NOT NULL DEFAULT '{}',
+    signed_at text,
+    signer_name text,
+    updated_at text DEFAULT (current_timestamp)
+  )
+`);
+
+const required = ["gallery_items", "calendar_events", "grades", "assignments", "parent_links", "tuition_accounts", "report_cards", "exams", "student_records"];
 for (const table of required) {
   const found = await client.execute({
     sql: "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",

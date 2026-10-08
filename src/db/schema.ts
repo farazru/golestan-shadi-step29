@@ -151,6 +151,15 @@ export const studentProfiles = sqliteTable("student_profiles", {
   updatedAt: text("updated_at").default(sql`(current_timestamp)`),
 });
 
+export const studentRecords = sqliteTable("student_records", {
+  id: text("id").primaryKey(),
+  studentId: text("student_id").notNull().unique().references(() => user.id),
+  payload: text("payload").notNull().default("{}"),
+  signedAt: text("signed_at"),
+  signerName: text("signer_name"),
+  updatedAt: text("updated_at").default(sql`(current_timestamp)`),
+});
+
 // ---------------------------------------------------------------------------
 // COURSES — a class subject, run by one teacher
 // ---------------------------------------------------------------------------

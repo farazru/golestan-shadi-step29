@@ -61,7 +61,7 @@ export default function SignupPage() {
     }
 
     setPending(false);
-    if (type === "student") router.push("/profile");
+    if (type === "student") router.push("/enrollment");
     else router.push("/dashboard");
     router.refresh();
   }

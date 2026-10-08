@@ -65,7 +65,13 @@ export function ProfileForm() {
       <BackLink fallback="/dashboard" />
       <div className="school-card rounded-3xl p-6">
         <h1 className="text-2xl font-semibold">پرونده و عکس دانش‌آموز</h1>
-        <p className="empty mt-1">همین صفحه را بعداً هم می‌توانید باز کنید و کامل کنید.</p>
+        <p className="empty mt-1">
+          مشخصات کامل شناسنامه و قرارداد شهریه در{" "}
+          <a href="/enrollment" className="underline">
+            پرونده ثبت‌نام
+          </a>{" "}
+          است. این صفحه برای عکس و اطلاعات کوتاه است.
+        </p>
         <form
           className="mt-4 flex flex-col gap-2"
           onSubmit={async (e) => {
