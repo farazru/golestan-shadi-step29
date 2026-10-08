@@ -37,7 +37,24 @@ const nextConfig: NextConfig = {
     root: path.join(__dirname),
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    const noindex = { key: "X-Robots-Tag", value: "noindex, nofollow" };
+    const hidden = [
+      "/dashboard/:path*",
+      "/login",
+      "/signup",
+      "/profile/:path*",
+      "/enrollment/:path*",
+      "/classroom/:path*",
+      "/print/:path*",
+      "/card/:path*",
+      "/exams/:path*",
+      "/tuition/:path*",
+      "/api/:path*",
+    ];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      ...hidden.map((source) => ({ source, headers: [noindex] })),
+    ];
   },
 };
 

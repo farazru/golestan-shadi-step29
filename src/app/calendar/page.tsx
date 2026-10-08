@@ -6,6 +6,13 @@ import { calendarEvents } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
 import { ACADEMIC_YEAR } from "@/lib/year";
 import { CalendarBoard } from "./calendar-board";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "تقویم مدرسه",
+  description: "رویدادها و مناسبت‌های سال تحصیلی گلستان شادی.",
+  path: "/calendar",
+});
 
 export default async function CalendarPage() {
   const events = await db.select().from(calendarEvents);

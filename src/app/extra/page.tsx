@@ -1,6 +1,13 @@
 import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "فعالیت‌های فوق برنامه",
+  description: "قرآن، ورزش، هنر و زبان در فوق برنامه گلستان شادی.",
+  path: "/extra",
+});
 
 const items = [
   ["قرآن و احکام", "برنامه هفتگی با هماهنگی دفتر اعلام می‌شود."],

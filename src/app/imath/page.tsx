@@ -2,6 +2,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BackLink } from "@/components/back-link";
 import { SCHOOL } from "@/lib/school";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "آیمث سهند",
+  description: "تنها نمایندگی رسمی آیمث در شهر جدید سهند، در مجموعه گلستان شادی.",
+  path: "/imath",
+});
 
 export default function IMathPage() {
   return (

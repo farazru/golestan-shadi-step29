@@ -2,6 +2,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SCHOOL } from "@/lib/school";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "تماس با ما",
+  description: "تلفن، آدرس و اینستاگرام گلستان شادی در شهر جدید سهند. مدیریت خانم اسدی.",
+  path: "/contact",
+});
 
 export default function ContactPage() {
   return (

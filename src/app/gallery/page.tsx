@@ -3,6 +3,13 @@ import { SiteFooter } from "@/components/site-footer";
 import { db } from "@/db";
 import { galleryItems } from "@/db/schema";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "آلبوم مدرسه",
+  description: "عکس‌های فعالیت‌ها و برنامه گلستان شادی در شهر جدید سهند.",
+  path: "/gallery",
+});
 
 export default async function GalleryPage() {
   const items = await db.select().from(galleryItems);

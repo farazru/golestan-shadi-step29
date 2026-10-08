@@ -3,6 +3,13 @@ import { SiteFooter } from "@/components/site-footer";
 import { BackLink } from "@/components/back-link";
 import { SCHOOL } from "@/lib/school";
 import { LanguageForm } from "./form";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "زبانکده",
+  description: "زبانکده انگلیسی گلستان شادی در شهر جدید سهند. برای اطلاع از کلاس‌ها نام و تلفن بگذارید.",
+  path: "/language",
+});
 
 export default function LanguagePage() {
   return (

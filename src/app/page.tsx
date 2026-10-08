@@ -9,6 +9,13 @@ import { ACADEMIC_YEAR } from "@/lib/year";
 import { SCHOOL } from "@/lib/school";
 import { SiteFooter } from "@/components/site-footer";
 import { safeQuery } from "@/lib/db-safe";
+import { pageMeta, schoolJsonLd } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "پیش‌دبستان، دبستان و زبانکده سهند",
+  description: "گلستان شادی در شهر جدید سهند: پیش‌دبستان مختلط، دبستان دخترانه، زبانکده انگلیسی و نمایندگی آیمث.",
+  path: "/",
+});
 
 export default async function Home() {
   const news = await safeQuery(
@@ -23,6 +30,7 @@ export default async function Home() {
   return (
     <div className="school-hero-bg flex min-h-full flex-col">
       <SiteHeader />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(schoolJsonLd()) }} />
       <main className="mx-auto flex w-full max-w-5xl flex-col gap-5 px-3 py-5 md:gap-6 md:px-4 md:py-8">
         <section className="school-card-mint relative overflow-hidden rounded-[2rem] px-6 pb-6 pt-8 text-center">
           <div className="mx-auto w-fit">

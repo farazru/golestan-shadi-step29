@@ -2,6 +2,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { BackLink } from "@/components/back-link";
 import { PreForm } from "./form";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "پیش‌ثبت‌نام",
+  description: "فرم پیش‌ثبت‌نام پیش‌دبستان و دبستان گلستان شادی. دفتر بعد از ثبت نام تماس می‌گیرد.",
+  path: "/preregister",
+});
 
 export default function PreRegister() {
   return (

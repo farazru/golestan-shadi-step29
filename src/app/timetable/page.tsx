@@ -1,6 +1,13 @@
 import { SiteHeader } from "@/components/site-header";
 import { TimetableGrid } from "./timetable-client";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "برنامه هفتگی",
+  description: "برنامه زنگ‌های کلاس در گلستان شادی.",
+  path: "/timetable",
+});
 
 export default function TimetablePage() {
   return (

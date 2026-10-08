@@ -2,6 +2,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import { SCHOOL } from "@/lib/school";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "درباره مدرسه",
+  description: "آشنایی با گلستان شادی: اهداف، امکانات، کادر آموزشی و کادر اداری دبستان و پیش‌دبستان در شهر جدید سهند.",
+  path: "/about",
+});
 
 const blocks = [
   {

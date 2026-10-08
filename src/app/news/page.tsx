@@ -3,6 +3,13 @@ import { db } from "@/db";
 import { publicNews } from "@/db/schema";
 import { desc } from "drizzle-orm";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "اخبار",
+  description: "اخبار کودک و نوجوان و اطلاعیه‌های گلستان شادی.",
+  path: "/news",
+});
 
 export default async function NewsPage() {
   const rows = await db.select().from(publicNews).orderBy(desc(publicNews.createdAt));

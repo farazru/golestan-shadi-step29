@@ -2,6 +2,13 @@ import { SiteHeader } from "@/components/site-header";
 import { SiteFooter } from "@/components/site-footer";
 import Link from "next/link";
 import { BackLink } from "@/components/back-link";
+import { pageMeta } from "@/lib/seo";
+
+export const metadata = pageMeta({
+  title: "انجمن اولیا",
+  description: "اطلاعیه‌های انجمن اولیا و مربیان گلستان شادی.",
+  path: "/parents-assoc",
+});
 
 export default function ParentsAssoc() {
   return (
