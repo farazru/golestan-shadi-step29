@@ -11,6 +11,7 @@ export function ContentManagementPanel() {
     <div className="flex flex-col gap-6">
       <h2 className="text-lg font-semibold">مدیریت محتوای سایت</h2>
       <NewsManager />
+      <ParentingManager />
       <CalendarManager />
       <GalleryManager />
       <ContactManager />
@@ -277,6 +278,75 @@ function ContactManager() {
         </button>
         {saved ? <p className="text-xs text-green-600">ذخیره شد.</p> : null}
       </form>
+    </div>
+  );
+}
+
+function ParentingManager() {
+  const [items, setItems] = useState<{ id: number; title: string; body: string }[]>([]);
+  const [pending, setPending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+
+  function refresh() {
+    fetch("/api/parenting")
+      .then((r) => r.json())
+      .then((d) => setItems(d.posts ?? []))
+      .catch(() => {});
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    setPending(true);
+    setError(null);
+    const form = new FormData(e.currentTarget);
+    const res = await fetch("/api/parenting", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: form.get("title"),
+        body: form.get("body"),
+        imageUrl: form.get("imageUrl"),
+      }),
+    });
+    setPending(false);
+    if (!res.ok) {
+      const d = await res.json().catch(() => ({}));
+      setError(d.error ?? "ثبت نشد.");
+      return;
+    }
+    e.currentTarget.reset();
+    refresh();
+  }
+
+  async function remove(id: number) {
+    await fetch(`/api/parenting?id=${id}`, { method: "DELETE" });
+    refresh();
+  }
+
+  return (
+    <div className="rounded-xl border border-teal-100 p-4">
+      <p className="text-sm font-medium">تربیت و روان‌شناسی کودک</p>
+      <form onSubmit={onSubmit} className="mt-3 flex flex-col gap-2">
+        <input name="title" placeholder="عنوان" required className="rounded-md border border-teal-200 px-3 py-2 text-sm" />
+        <textarea name="body" placeholder="متن نکته تربیتی" required className="rounded-md border border-teal-200 px-3 py-2 text-sm" />
+        <input name="imageUrl" placeholder="آدرس عکس (اختیاری)" className="rounded-md border border-teal-200 px-3 py-2 text-sm" dir="ltr" />
+        <button type="submit" disabled={pending} className="self-start rounded-full bg-teal-700 px-4 py-1.5 text-xs font-medium text-white disabled:opacity-60">
+          {pending ? "در حال ثبت…" : "افزودن مطلب"}
+        </button>
+        {error ? <p className="text-xs text-red-600">{error}</p> : null}
+      </form>
+      <ul className="mt-3 flex flex-col gap-2">
+        {items.map((n) => (
+          <li key={n.id} className="flex items-center justify-between gap-2 text-sm">
+            <span className="truncate">{n.title}</span>
+            <button type="button" onClick={() => remove(n.id)} className="text-xs text-red-600">حذف</button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }

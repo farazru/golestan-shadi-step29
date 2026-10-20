@@ -7,7 +7,7 @@ import { pageMeta } from "@/lib/seo";
 
 export const metadata = pageMeta({
   title: "زبانکده",
-  description: "زبانکده انگلیسی گلستان شادی در شهر جدید سهند. برای اطلاع از کلاس‌ها نام و تلفن بگذارید.",
+  description: "زبانکده انگلیسی گلستان شادی در شهر جدید سهند. برای اطلاع از کلاس‌ها نام و شماره تلفن خود را وارد کنید.",
   path: "/language",
 });
 
@@ -23,6 +23,16 @@ export default function LanguagePage() {
           <p className="mt-3 text-sm leading-8">
             آموزش انگلیسی برای کودکان و نوجوانان — مختلط. فرم زیر را پر کنید تا دفتر با شما تماس بگیرد.
           </p>
+          <div className="mt-6 grid gap-3 sm:grid-cols-2">
+            <div className="rounded-2xl bg-amber-50 p-4 text-sm leading-7 text-amber-900">
+              <p className="font-medium">کلاس‌های کودک و نوجوان</p>
+              <p className="mt-1">از پیش‌دبستان تا دبستان، در محیطی شاد و امن.</p>
+            </div>
+            <div className="rounded-2xl bg-teal-50 p-4 text-sm leading-7 text-teal-900">
+              <p className="font-medium">تماس برای ثبت‌نام</p>
+              <p className="mt-1">{SCHOOL.phoneMobile}</p>
+            </div>
+          </div>
           <LanguageForm />
         </section>
       </main>

@@ -405,6 +405,22 @@ export const languageLeads = sqliteTable("language_leads", {
   createdAt: text("created_at").default(sql`(current_timestamp)`),
 });
 
+export const parentingPosts = sqliteTable("parenting_posts", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  title: text("title").notNull(),
+  body: text("body").notNull(),
+  imageUrl: text("image_url"),
+  createdAt: text("created_at").default(sql`(current_timestamp)`),
+});
+
+export const parentingComments = sqliteTable("parenting_comments", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  postId: integer("post_id").notNull().references(() => parentingPosts.id),
+  authorName: text("author_name").notNull(),
+  body: text("body").notNull(),
+  createdAt: text("created_at").default(sql`(current_timestamp)`),
+});
+
 export const tuitionAccounts = sqliteTable("tuition_accounts", {
   id: integer("id").primaryKey({ autoIncrement: true }),
   studentId: text("student_id").references(() => user.id),

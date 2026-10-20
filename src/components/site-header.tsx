@@ -50,6 +50,7 @@ export async function SiteHeader() {
         <Link href="/calendar">تقویم {ACADEMIC_YEAR}</Link>
         <Link href="/imath">آیمث</Link>
         <Link href="/language">زبانکده</Link>
+        <Link href="/parenting">تربیت کودک</Link>
         <Link href="/preregister">پیش ثبت‌نام</Link>
         <Link href="/contact">تماس با ما</Link>
       </nav>

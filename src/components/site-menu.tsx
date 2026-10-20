@@ -108,6 +108,9 @@ export function SiteMenu() {
             <Link href="/language" onClick={() => setOpen(false)} className="min-h-12 border-b border-white/20 py-3">
               زبانکده انگلیسی
             </Link>
+            <Link href="/parenting" onClick={() => setOpen(false)} className="min-h-12 border-b border-white/20 py-3">
+              تربیت و روان‌شناسی
+            </Link>
             <Link href="/preregister" onClick={() => setOpen(false)} className="min-h-12 border-b border-white/20 py-3">
               پیش ثبت نام
             </Link>
