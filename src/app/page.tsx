@@ -59,11 +59,14 @@ export default async function Home() {
             <p className="mt-1 text-sm">پایه‌های اول تا ششم</p>
           </Link>
           <Link href="/preregister" className="school-card-sun rounded-3xl p-5">
-            <p className="mt-2 text-lg font-extrabold">پیش‌دبستان مختلط</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/kids-preschool.jpg" alt="" className="h-28 w-full rounded-2xl object-cover" />
+            <p className="mt-3 text-lg font-extrabold">پیش‌دبستان مختلط</p>
             <p className="mt-1 text-sm">آمادگی دختر و پسر</p>
           </Link>
           <Link href="/language" className="school-card rounded-3xl p-5">
-            <p className="role-pill">انگلیسی</p>
+            {/* eslint-disable-next-line @next/next/no-img-element */}
+            <img src="/kids-language.jpg" alt="" className="h-28 w-full rounded-2xl object-cover" />
             <p className="mt-3 text-lg font-extrabold">زبانکده</p>
             <p className="mt-1 text-sm text-muted">آموزش انگلیسی · تماس با دفتر</p>
           </Link>
