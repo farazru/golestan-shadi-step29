@@ -43,6 +43,8 @@ export default async function ParentingPage() {
                   <h2 className="font-medium">{p.title}</h2>
                   <p className="mt-2 text-sm leading-7 whitespace-pre-wrap">{p.body}</p>
                   {p.imageUrl ? (
+                    // External manager-provided URL; next/image would require a remotePatterns allowlist.
+                    // eslint-disable-next-line @next/next/no-img-element
                     <img src={p.imageUrl} alt="" className="mt-3 max-h-64 w-full rounded-xl object-cover" />
                   ) : null}
                   <div className="mt-4 border-t border-slate-100 pt-3">

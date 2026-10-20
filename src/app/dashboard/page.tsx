@@ -59,8 +59,12 @@ export default async function DashboardPage({
       {me.role === "student" ? <StudentView studentId={me.id} grade={me.grade ?? null} /> : null}
       {me.role === "teacher" ? <TeacherView teacherId={me.id} /> : null}
       {me.role === "manager" ? <ManagerView /> : null}
-      {me.role === "parent" ? <ParentView parentId={me.id} selectedChild={selectedChild} /> : null}
       {me.role === "deputy" ? <DeputyView /> : null}
+      {me.role === "parent" ? (
+        <p className="rounded-2xl border border-[#D9E7E5] bg-white px-4 py-3 text-sm">
+          پنل ولی حذف شده است. برای دیدن اطلاعات فرزند با دفتر مدرسه تماس بگیرید.
+        </p>
+      ) : null}
 
       <p className="rounded-2xl border border-[#D9E7E5] bg-white px-4 py-3 text-sm leading-7">
         کلاس زنده با <strong>الوکام</strong> است. معلم لینک اتاق را می‌گذارد؛ دانش‌آموز «ورود به کلاس الوکام» را می‌زند.
@@ -417,46 +421,6 @@ async function ManagerView() {
         {" · "}
         <Link href="/print/roster" className="underline">چاپ لیست کلاس</Link>
       </p>
-    </div>
-  );
-}
-
-async function ParentView({ parentId, selectedChild }: { parentId: string; selectedChild?: string }) {
-  const links = await db
-    .select()
-    .from(parentLinks)
-    .where(and(eq(parentLinks.parentId, parentId), eq(parentLinks.status, "approved")));
-  if (links.length === 0) {
-    return (
-      <p className="empty">هنوز فرزندی تأیید نشده. کد ملی دانش‌آموز را به دفتر بدهید.</p>
-    );
-  }
-  const allChildren = [];
-  for (const link of links) {
-    const stu = await db.query.user.findFirst({ where: eq(user.id, link.studentId) });
-    if (stu) allChildren.push(stu);
-  }
-  const child = allChildren.find((stu) => stu.id === selectedChild) ?? allChildren[0];
-  if (!child) {
-    return <p className="empty">هنوز فرزندی تأیید نشده. کد ملی دانش‌آموز را به دفتر بدهید.</p>;
-  }
-  return (
-    <div className="flex flex-col gap-6">
-      {allChildren.length > 1 ? (
-        <nav className="flex flex-wrap gap-2">
-          {allChildren.map((stu) => (
-            <a
-              key={stu.id}
-              href={`/dashboard?child=${stu.id}`}
-              className={`rounded-full px-4 py-2 text-sm font-bold ${stu.id === child.id ? "bg-ink text-white" : "school-card"}`}
-            >
-              {stu.firstName} {stu.lastName}
-            </a>
-          ))}
-        </nav>
-      ) : null}
-      <p className="empty">نمای دانش‌آموز برای فرزند تأییدشده. کلاس زنده برای ولی باز نیست.</p>
-      <StudentView studentId={child.id} grade={child.grade ?? null} parentMode />
     </div>
   );
 }

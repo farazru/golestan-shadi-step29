@@ -151,7 +151,15 @@ export function CalendarBoard({
         <form onSubmit={onAdd} className="school-card flex flex-col gap-2 rounded-2xl p-4">
           <p className="font-bold">ثبت رویداد برای همه</p>
           <input name="title" required placeholder="عنوان" className="field rounded-xl px-3 py-2 text-sm" />
-          <input name="day" required placeholder="۱۴۰۵-۰۷-۱۵" className="field rounded-xl px-3 py-2 text-sm" />
+          <input
+            key={`${year}-${month}-${picked}`}
+            name="day"
+            required
+            placeholder="1405-07-15"
+            defaultValue={picked ? `${year}-${String(month).padStart(2, "0")}-${String(picked).padStart(2, "0")}` : ""}
+            className="field rounded-xl px-3 py-2 text-sm"
+            dir="ltr"
+          />
           <select name="kind" className="field rounded-xl px-3 py-2 text-sm">
             <option value="event">رویداد</option>
             <option value="holiday">تعطیل</option>

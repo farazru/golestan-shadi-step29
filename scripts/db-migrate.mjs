@@ -63,7 +63,7 @@ await client.execute(`
   )
 `);
 
-const required = ["gallery_items", "calendar_events", "grades", "assignments", "parent_links", "tuition_accounts", "report_cards", "exams", "student_records"];
+const required = ["gallery_items", "calendar_events", "grades", "assignments", "parent_links", "tuition_accounts", "report_cards", "exams", "student_records", "parenting_posts", "parenting_comments"];
 for (const table of required) {
   const found = await client.execute({
     sql: "SELECT name FROM sqlite_master WHERE type = 'table' AND name = ?",
