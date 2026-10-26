@@ -34,6 +34,9 @@ export async function PATCH(request: NextRequest) {
   if (!access.ok) return NextResponse.json({ error: access.error }, { status: access.status });
 
   if (typeof body?.whiteboardJson === "string") {
+    if (!access.staff) {
+      return NextResponse.json({ error: "فقط معلم یا مدیر می‌تواند تخته را ویرایش کند." }, { status: 403 });
+    }
     await db
       .update(classSessions)
       .set({ whiteboardJson: body.whiteboardJson })

@@ -87,6 +87,10 @@ export async function POST(request: NextRequest) {
   });
 
   if (existing) {
+    // Students may only insert their own first record. Staff records cannot be overwritten by the student.
+    if (session.user.role === "student") {
+      return NextResponse.json({ error: "حضور قبلاً ثبت شده است." }, { status: 409 });
+    }
     await db
       .update(attendance)
       .set({ status, recordedAt: new Date().toISOString() })

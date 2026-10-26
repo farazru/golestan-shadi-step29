@@ -15,7 +15,7 @@ export async function GET() {
     });
   }
   try {
-    const file = path.join(process.cwd(), "school.db");
+    const file = path.join(process.cwd(), "data", "school.db");
     const buf = await readFile(file);
     await logAction(session.user.id, "download_backup", "school.db");
     return new NextResponse(buf, {

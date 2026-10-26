@@ -5,9 +5,9 @@ import { staffInvites } from "@/db/schema";
 import { getSession } from "@/lib/get-session";
 
 function generateCode() {
-  // Short, readable code like "K3F9-7QRT"
-  const raw = randomBytes(6).toString("hex").toUpperCase();
-  return `${raw.slice(0, 4)}-${raw.slice(4, 8)}`;
+  // Longer, high-entropy code. Still readable when grouped.
+  const raw = randomBytes(12).toString("hex").toUpperCase();
+  return `${raw.slice(0, 4)}-${raw.slice(4, 8)}-${raw.slice(8, 12)}-${raw.slice(12, 16)}-${raw.slice(16, 20)}-${raw.slice(20, 24)}`;
 }
 
 export async function POST(request: NextRequest) {

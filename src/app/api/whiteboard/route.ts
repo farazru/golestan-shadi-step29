@@ -41,6 +41,11 @@ export async function PUT(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "وارد نشده‌اید." }, { status: 401 });
 
+  // Only the course teacher, manager, or deputy may write the shared whiteboard.
+  if (session.user.role === "student" || session.user.role === "parent") {
+    return NextResponse.json({ error: "فقط معلم یا مدیر می‌تواند تخته را ویرایش کند." }, { status: 403 });
+  }
+
   const body = await request.json().catch(() => null);
   const roomId = typeof body?.roomId === "string" ? body.roomId : "";
   const whiteboardJson = typeof body?.whiteboardJson === "string" ? body.whiteboardJson : "";

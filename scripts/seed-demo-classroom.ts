@@ -12,6 +12,11 @@ import { auth } from "../src/lib/auth";
 import { db } from "../src/db";
 import { user, courses, classSessions, enrollments, studentProfiles } from "../src/db/schema";
 
+if (process.env.NODE_ENV === "production") {
+  console.error("Refusing to run demo seed in production.");
+  process.exit(1);
+}
+
 // The six elementary grades, each with a real subject name so the demo
 // data actually looks like a school instead of "Test Course".
 const GRADE_COURSES: { grade: string; subject: string }[] = [

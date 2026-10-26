@@ -100,5 +100,24 @@ export async function GET() {
     .leftJoin(user, eq(courses.teacherId, user.id))
     .orderBy(desc(courses.createdAt));
 
-  return NextResponse.json({ courses: allCourses });
+  const role = session.user.role;
+  const isStaff = role === "teacher" || role === "manager" || role === "deputy";
+
+  if (isStaff) {
+    return NextResponse.json({ courses: allCourses });
+  }
+
+  // Students only see courses they are enrolled in, and only their own meeting links.
+  const { enrollments } = await import("@/db/schema");
+  const mine = await db
+    .select({ courseId: enrollments.courseId })
+    .from(enrollments)
+    .where(eq(enrollments.studentId, session.user.id));
+  const enrolledIds = new Set(mine.map((r) => r.courseId));
+
+  const visible = allCourses
+    .filter((c) => enrolledIds.has(c.id))
+    .map((c) => ({ ...c, meetingUrl: c.meetingUrl }));
+
+  return NextResponse.json({ courses: visible });
 }

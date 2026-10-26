@@ -45,6 +45,12 @@ export async function POST(request: NextRequest) {
     return NextResponse.json({ error: "این درس وجود ندارد." }, { status: 404 });
   }
 
+  if (session.user.role === "student") {
+    if (course.grade && target.grade && course.grade !== target.grade) {
+      return NextResponse.json({ error: "این درس برای پایه شما نیست." }, { status: 403 });
+    }
+  }
+
   const existing = await db.query.enrollments.findFirst({
     where: and(eq(enrollments.studentId, studentId), eq(enrollments.courseId, courseId)),
   });
