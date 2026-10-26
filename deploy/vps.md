@@ -49,10 +49,13 @@ pm2 startup
 server {
   listen 80;
   server_name golestanshadi.ir;
+  client_max_body_size 16M;
   location / {
     proxy_pass http://127.0.0.1:8080;
     proxy_set_header Host $host;
     proxy_set_header X-Forwarded-Proto $scheme;
+    proxy_set_header X-Real-IP $remote_addr;
+    proxy_set_header X-Forwarded-For $remote_addr;
   }
 }
 ```

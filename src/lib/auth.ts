@@ -23,6 +23,9 @@ export const auth = betterAuth({
   emailAndPassword: {
     enabled: true,
     minPasswordLength: 8,
+    // Disable Better Auth's own signup endpoint. All signups go through /api/signup,
+    // which enforces signupOpen, student codes, and rate limits.
+    disableSignUp: true,
   },
   session: {
     expiresIn: 60 * 60 * 24 * 7,
@@ -40,10 +43,12 @@ export const auth = betterAuth({
         // be promoted afterward by someone with manager access.
         input: false,
       },
-      firstName: { type: "string", required: true, input: true },
-      lastName: { type: "string", required: true, input: true },
+      firstName: { type: "string", required: true, input: false },
+      lastName: { type: "string", required: true, input: false },
       // Grade is assigned by staff afterward, never chosen at signup.
       grade: { type: "string", required: false, input: false },
+      // image is set only by our avatar upload route, never by update-user.
+      image: { type: "string", required: false, input: false },
     },
   },
   // Lets people log in with an ID Number instead of an email.

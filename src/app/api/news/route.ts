@@ -25,6 +25,9 @@ export async function POST(request: NextRequest) {
   const title = typeof body?.title === "string" ? body.title.trim() : "";
   const newsBody = typeof body?.body === "string" ? body.body.trim() : "";
   const link = typeof body?.link === "string" ? body.link.trim() : "";
+  if (link && !/^https?:\/\//i.test(link)) {
+    return NextResponse.json({ error: "لینک باید با http یا https شروع شود." }, { status: 400 });
+  }
   if (!title) {
     return NextResponse.json({ error: "عنوان الزامی است." }, { status: 400 });
   }

@@ -37,7 +37,7 @@ export async function GET(request: NextRequest) {
     return new NextResponse(new Uint8Array(buf), {
       headers: {
         "Content-Type": type,
-        "Content-Disposition": `attachment; filename="${row.fileName ?? stored}"`,
+        "Content-Disposition": `attachment; filename="file"; filename*=UTF-8''${encodeURIComponent(row.fileName ?? stored)}`,
         "Cache-Control": "no-store",
       },
     });

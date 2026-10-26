@@ -24,15 +24,28 @@ export async function GET(request: NextRequest) {
     return NextResponse.json({ error: "عکس نیست." }, { status: 404 });
   }
   const stored = row.image.slice(5);
-  const buf = await readFile(path.join(dir(), stored));
-  const type = stored.endsWith(".png") ? "image/png" : stored.endsWith(".webp") ? "image/webp" : "image/jpeg";
-  return new NextResponse(new Uint8Array(buf), {
-    headers: {
-      "Content-Type": type,
-      "X-Content-Type-Options": "nosniff",
-      "Cache-Control": "private, max-age=3600",
-    },
-  });
+  // Only allow a UUID-style name with a known image extension. Reject path traversal.
+  if (!/^[0-9a-f-]+\.(jpg|png|webp)$/i.test(stored)) {
+    return NextResponse.json({ error: "عکس نامعتبر." }, { status: 400 });
+  }
+  const base = dir();
+  const resolved = path.resolve(base, stored);
+  if (!resolved.startsWith(path.resolve(base) + path.sep) && resolved !== path.resolve(base)) {
+    return NextResponse.json({ error: "مسیر نامعتبر." }, { status: 400 });
+  }
+  try {
+    const buf = await readFile(resolved);
+    const type = stored.endsWith(".png") ? "image/png" : stored.endsWith(".webp") ? "image/webp" : "image/jpeg";
+    return new NextResponse(new Uint8Array(buf), {
+      headers: {
+        "Content-Type": type,
+        "X-Content-Type-Options": "nosniff",
+        "Cache-Control": "private, max-age=3600",
+      },
+    });
+  } catch {
+    return NextResponse.json({ error: "عکس پیدا نشد." }, { status: 404 });
+  }
 }
 
 export async function POST(request: NextRequest) {

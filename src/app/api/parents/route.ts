@@ -25,7 +25,7 @@ export async function GET() {
       .where(and(eq(parentLinks.parentId, session.user.id), eq(parentLinks.status, "approved")));
     return NextResponse.json({ children: rows });
   }
-  if (session.user.role !== "manager" && session.user.role !== "teacher" && session.user.role !== "deputy") {
+  if (session.user.role !== "manager" && session.user.role !== "deputy") {
     return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });
   }
   const parentUser = alias(user, "parent_user");

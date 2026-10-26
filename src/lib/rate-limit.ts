@@ -30,6 +30,10 @@ export function rateLimit(key: string, limit: number, windowMs: number) {
 // reverse proxies/hosts that set x-forwarded-for; falls back to a shared
 // bucket if nothing is available, which is still better than nothing).
 export function clientKeyFromHeaders(headers: Headers) {
+  // Prefer X-Real-IP set by our nginx. Do not trust the first X-Forwarded-For
+  // value, because a client can forge it if the proxy does not overwrite it.
+  const real = headers.get("x-real-ip");
+  if (real) return real.trim();
   const forwarded = headers.get("x-forwarded-for");
   if (forwarded) return forwarded.split(",")[0].trim();
   return "unknown";
