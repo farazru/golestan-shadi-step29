@@ -2,13 +2,13 @@ import { NextResponse } from "next/server";
 import { eq } from "drizzle-orm";
 import { db } from "@/db";
 import { user } from "@/db/schema";
-import { getSession } from "@/lib/get-session";
+import { isOffice } from "@/lib/access";
 
 // Only a manager needs this — to pick which real teacher a new course
 // belongs to, instead of the manager silently becoming the teacher.
 export async function GET() {
   const session = await getSession();
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "دسترسی غیرمجاز." }, { status: 403 });
   }
 

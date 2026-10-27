@@ -2,11 +2,11 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { db } from "@/db";
 import { studentCodes } from "@/db/schema";
-import { getSession } from "@/lib/get-session";
+import { isOffice } from "@/lib/access";
 
 export async function GET() {
   const session = await getSession();
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "فقط مدیر." }, { status: 403 });
   }
   const rows = await db.select().from(studentCodes);
@@ -15,7 +15,7 @@ export async function GET() {
 
 export async function POST(request: NextRequest) {
   const session = await getSession();
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "فقط مدیر." }, { status: 403 });
   }
   const body = await request.json().catch(() => null);

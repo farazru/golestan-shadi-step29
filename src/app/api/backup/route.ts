@@ -1,12 +1,12 @@
 import { NextResponse } from "next/server";
 import { readFile } from "fs/promises";
 import path from "path";
-import { getSession } from "@/lib/get-session";
+import { isOffice } from "@/lib/access";
 import { logAction } from "@/lib/audit";
 
 export async function GET() {
   const session = await getSession();
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "فقط مدیر." }, { status: 403 });
   }
   if (process.env.DATABASE_URL) {

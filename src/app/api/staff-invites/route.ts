@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { randomBytes } from "crypto";
 import { db } from "@/db";
 import { staffInvites } from "@/db/schema";
-import { getSession } from "@/lib/get-session";
+import { isOffice } from "@/lib/access";
 
 function generateCode() {
   // Longer, high-entropy code. Still readable when grouped.
@@ -14,7 +14,7 @@ export async function POST(request: NextRequest) {
   const session = await getSession();
 
   // Only an existing manager can mint new invite codes.
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "Only a manager can create invite codes." }, { status: 403 });
   }
 
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
 export async function GET() {
   const session = await getSession();
-  if (!session || session.user.role !== "manager") {
+  if (!session || !isOffice(session.user.role)) {
     return NextResponse.json({ error: "Only a manager can view invite codes." }, { status: 403 });
   }
 
