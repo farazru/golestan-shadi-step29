@@ -402,6 +402,9 @@ export const languageLeads = sqliteTable("language_leads", {
   name: text("name").notNull(),
   phone: text("phone").notNull(),
   note: text("note"),
+  age: text("age"),
+  level: text("level"),
+  preferredDays: text("preferred_days"),
   createdAt: text("created_at").default(sql`(current_timestamp)`),
 });
 

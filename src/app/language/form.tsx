@@ -18,6 +18,9 @@ export function LanguageForm() {
       body: JSON.stringify({
         name: form.get("name"),
         phone: form.get("phone"),
+        age: form.get("age"),
+        level: form.get("level"),
+        preferredDays: form.get("preferredDays"),
         note: form.get("note"),
       }),
     });
@@ -42,7 +45,16 @@ export function LanguageForm() {
     <form onSubmit={onSubmit} className="mt-6 flex flex-col gap-3">
       <input name="name" required placeholder="نام و نام خانوادگی" className="field rounded-2xl px-3 py-2" />
       <input name="phone" required placeholder="تلفن همراه" className="field rounded-2xl px-3 py-2" dir="ltr" />
-      <textarea name="note" placeholder="سطح یا توضیح کوتاه (اختیاری)" className="field rounded-2xl px-3 py-2" />
+      <input name="age" placeholder="سن" className="field rounded-2xl px-3 py-2" />
+      <select name="level" className="field rounded-2xl px-3 py-2">
+        <option value="">سطح فعلی</option>
+        <option value="beginner">مبتدی</option>
+        <option value="elementary">مقدماتی</option>
+        <option value="intermediate">متوسط</option>
+        <option value="advanced">پیشرفته</option>
+      </select>
+      <input name="preferredDays" placeholder="روزهای ترجیحی (مثلاً شنبه و دوشنبه)" className="field rounded-2xl px-3 py-2" />
+      <textarea name="note" placeholder="توضیح کوتاه (اختیاری)" className="field rounded-2xl px-3 py-2" />
       <button type="submit" disabled={pending} className="btn-primary self-start rounded-full px-5 py-2 text-sm">
         {pending ? "…" : "ارسال درخواست"}
       </button>

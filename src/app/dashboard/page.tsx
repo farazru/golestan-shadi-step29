@@ -17,6 +17,7 @@ import { IncompletePanel, ProfileBanner } from "./incomplete-panel";
 import { ContentManagementPanel } from "./content-management-panel";
 import { RosterItem } from "./roster-item";
 import { DisciplineLookup } from "./discipline-panel";
+import { TodayStrip } from "@/components/today-strip";
 import { TimeGreeting } from "@/components/time-greeting";
 import { KarnamehPanel } from "./karnameh-panel";
 import { ParentLinksPanel } from "./parent-links-panel";
@@ -56,6 +57,7 @@ export default async function DashboardPage({
         <SignOutButton />
       </div>
 
+      <TodayStrip />
       {me.role === "student" ? <StudentView studentId={me.id} grade={me.grade ?? null} /> : null}
       {me.role === "teacher" ? <TeacherView teacherId={me.id} /> : null}
       {me.role === "manager" ? <ManagerView /> : null}
@@ -188,7 +190,7 @@ async function StudentView({
         <h2 className="text-lg font-semibold">دوره‌های من</h2>
 
         {myCourseSessions.length === 0 ? (
-          <p className="empty">هنوز دوره‌ای نیست — از معلم یا مدیر بخواهید شما را ثبت‌نام کنند.</p>
+          <p className="empty">هنوز دوره‌ای نیست — از مدیر کد دعوت بگیرید.</p>
         ) : (
           <ul className="flex flex-col gap-2">
             {myCourseSessions.map((s) => (

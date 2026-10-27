@@ -28,8 +28,9 @@ export const auth = betterAuth({
     disableSignUp: true,
   },
   session: {
-    expiresIn: 60 * 60 * 24 * 7,
-    updateAge: 60 * 60 * 24,
+    // 4 hours — shared classroom PCs should not stay logged in all day.
+    expiresIn: 60 * 60 * 4,
+    updateAge: 60 * 60,
   },
   user: {
     additionalFields: {

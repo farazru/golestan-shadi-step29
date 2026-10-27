@@ -34,6 +34,9 @@ export default function LanguagePage() {
             </div>
           </div>
           <LanguageForm />
+          <p className="mt-4 text-sm">
+            <a href="/language/timetable" className="underline">برنامه کلاس‌های زبانکده</a>
+          </p>
         </section>
       </main>
       <SiteFooter />

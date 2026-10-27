@@ -43,6 +43,10 @@ export async function GET(request: NextRequest) {
 export async function POST(request: NextRequest) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "وارد شوید." }, { status: 401 });
+  // Teacher-only chat for this age. Students can read but not write.
+  if (session.user.role === "student" || session.user.role === "parent") {
+    return NextResponse.json({ error: "فقط معلم یا دفتر می‌تواند پیام بفرستد." }, { status: 403 });
+  }
   const body = await request.json().catch(() => null);
   const courseId = Number(body?.courseId) || 0;
   const text = typeof body?.body === "string" ? body.body.trim() : "";

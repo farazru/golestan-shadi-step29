@@ -21,6 +21,16 @@ export async function POST(request: NextRequest) {
   if (!name || !phone) {
     return NextResponse.json({ error: "نام و تلفن لازم است." }, { status: 400 });
   }
-  await db.insert(languageLeads).values({ name, phone, note: note || null });
+  const age = typeof body?.age === "string" ? body.age.trim() : "";
+  const level = typeof body?.level === "string" ? body.level.trim() : "";
+  const preferredDays = typeof body?.preferredDays === "string" ? body.preferredDays.trim() : "";
+  await db.insert(languageLeads).values({
+    name,
+    phone,
+    note: note || null,
+    age: age || null,
+    level: level || null,
+    preferredDays: preferredDays || null,
+  });
   return NextResponse.json({ success: true });
 }
