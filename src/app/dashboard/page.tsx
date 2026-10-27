@@ -18,6 +18,7 @@ import { ContentManagementPanel } from "./content-management-panel";
 import { RosterItem } from "./roster-item";
 import { DisciplineLookup } from "./discipline-panel";
 import { TodayStrip } from "@/components/today-strip";
+import { ManagerStats } from "@/components/manager-stats";
 import { TimeGreeting } from "@/components/time-greeting";
 import { KarnamehPanel } from "./karnameh-panel";
 import { ParentLinksPanel } from "./parent-links-panel";
@@ -57,6 +58,7 @@ export default async function DashboardPage({
         <SignOutButton />
       </div>
 
+      {me.role === "manager" || me.role === "deputy" ? <ManagerStats /> : null}
       <TodayStrip />
       {me.role === "student" ? <StudentView studentId={me.id} grade={me.grade ?? null} /> : null}
       {me.role === "teacher" ? <TeacherView teacherId={me.id} /> : null}

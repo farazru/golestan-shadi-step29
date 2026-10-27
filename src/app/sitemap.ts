@@ -7,6 +7,8 @@ const PUBLIC_PATHS = [
   "/contact",
   "/preregister",
   "/language",
+  "/language/timetable",
+  "/parenting",
   "/imath",
   "/extra",
   "/gallery",

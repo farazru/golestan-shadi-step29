@@ -6,6 +6,14 @@ export function isOffice(role?: string | null) {
   return role === "manager" || role === "deputy";
 }
 
+export function requireRole(role: string | null | undefined, allowed: string[]): boolean {
+  return !!role && allowed.includes(role);
+}
+
+export function isStaff(role?: string | null) {
+  return role === "manager" || role === "deputy" || role === "teacher";
+}
+
 export async function teacherOwnsCourse(teacherId: string, courseId: number) {
   const course = await db.query.courses.findFirst({ where: eq(courses.id, courseId) });
   return !!course && course.teacherId === teacherId;
