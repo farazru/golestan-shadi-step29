@@ -76,8 +76,22 @@ export function TuitionClient() {
     return { fee, paid, due: fee - paid };
   }, [rows, payments]);
 
+  async function copyOverdue() {
+    const res = await fetch("/api/tuition/overdue");
+    if (!res.ok) return;
+    const d = await res.json();
+    const text = d.text || "مورد معوقی نیست.";
+    await navigator.clipboard.writeText(text);
+    alert("متن یادآوری کپی شد. می‌توانید در واتساپ بفرستید.");
+  }
+
   return (
     <div className="flex flex-col gap-5">
+      {canEdit ? (
+        <button type="button" onClick={copyOverdue} className="btn-secondary self-start rounded-full px-4 py-2 text-sm">
+          کپی یادآوری معوقات برای واتساپ
+        </button>
+      ) : null}
       <p className="empty">مبالغ به تومان است. شهریه سال معمولاً بیش از ۲۵٬۰۰۰٬۰۰۰ تومان است — هر ماه چند میلیون.</p>
       <div className="flex flex-wrap gap-2">
         {TUITION_CLASSES.map((c) => (
@@ -136,7 +150,10 @@ export function TuitionClient() {
                 const total = pays.reduce((s, p) => s + p.amountToman, 0);
                 return (
                   <tr key={a.id} className="border-b border-teal-50 align-top">
-                    <td className="p-2 font-medium">{a.fullName}</td>
+                    <td className="p-2 font-medium">
+                      {a.fullName}
+                      <a href={`/api/tuition/statement?id=${a.id}`} className="mr-2 text-xs underline">صورت‌حساب</a>
+                    </td>
                     <td className="p-2 whitespace-nowrap">{formatToman(a.feeToman)}</td>
                     {TUITION_MONTHS.map((m) => {
                       const cell = pays.filter((p) => p.monthKey === m.key);
