@@ -8,6 +8,10 @@ export const SCHOOL = {
   phoneLandline: "04133406631",
   instagram: "https://www.instagram.com/golestaneh.shadi.1379",
   instagramHandle: "@golestaneh.shadi.1379",
+  bale: "https://ble.ir/golestanshadi",
+  eitaa: "https://eitaa.com/golestanshadi",
+  gama: "https://gama.ir",
+  balad: "https://balad.ir",
   mapsUrl: "https://maps.app.goo.gl/HYGeSy1h9Fo8xSio9",
   mapsEmbed:
     "https://maps.google.com/maps?q=%D8%B3%D9%87%D9%86%D8%AF%20%DA%AF%D9%84%D8%B3%D8%AA%D8%A7%D9%86%20%D8%B4%D8%A7%D8%AF%DB%8C&hl=fa&z=16&output=embed",

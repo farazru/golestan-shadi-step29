@@ -394,6 +394,7 @@ export const preregister = sqliteTable("preregister", {
   phone: text("phone").notNull(),
   grade: text("grade"),
   note: text("note"),
+  trackingCode: text("tracking_code"),
   createdAt: text("created_at").default(sql`(current_timestamp)`),
 });
 

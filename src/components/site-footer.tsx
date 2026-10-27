@@ -59,6 +59,10 @@ export function SiteFooter() {
               <InstagramIcon />
               {SCHOOL.instagramHandle}
             </a>
+            <div className="mt-2 flex gap-3 text-sm">
+              <a href={SCHOOL.bale} target="_blank" rel="noreferrer" className="underline">بله</a>
+              <a href={SCHOOL.eitaa} target="_blank" rel="noreferrer" className="underline">ایتا</a>
+            </div>
           </div>
         </div>
       </div>

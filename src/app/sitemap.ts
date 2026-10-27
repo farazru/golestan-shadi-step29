@@ -15,7 +15,12 @@ const PUBLIC_PATHS = [
   "/news",
   "/calendar",
   "/timetable",
-  "/parents-assoc",
+  "/facilities",
+  "/staff",
+  "/achievements",
+  "/regulations",
+  "/help",
+  "/register",
 ];
 
 export default function sitemap(): MetadataRoute.Sitemap {
