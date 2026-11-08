@@ -8,7 +8,9 @@
     "userInterfaceStyle": "light",
     "icon": "../public/logo.png",
     "splash": {
-      "backgroundColor": "#fffdf6"
+      "image": "../public/logo.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#084843"
     },
     "android": {
       "package": "ir.golestanshadi.app",

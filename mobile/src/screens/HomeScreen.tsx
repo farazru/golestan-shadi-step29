@@ -12,16 +12,20 @@ export function HomeScreen({ onOut }: { onOut: () => void }) {
   const [courses, setCourses] = useState<{ id: number; name: string; grade?: string }[]>([]);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
+  async function load() {
     api("/api/auth/get-session").then((d) => setMe((d as { user?: Me }).user ?? null)).catch((e) => setError(e.message));
     api("/api/courses").then((d) => setCourses((d as { courses?: typeof courses }).courses ?? [])).catch(() => {});
     api("/api/manager-stats").then(setStats).catch(() => {});
+  }
+
+  useEffect(() => {
+    load();
   }, []);
 
   const role = me?.role === "teacher" ? "معلم" : me?.role === "manager" || me?.role === "deputy" ? "دفتر" : "دانش‌آموز";
 
   return (
-    <Screen title={me ? `${me.firstName ?? ""} ${me.lastName ?? ""}` : "گلستان شادی"} subtitle={role}>
+    <Screen title={me ? `${me.firstName ?? ""} ${me.lastName ?? ""}` : "گلستان شادی"} subtitle={role} onRefresh={load}>
       {error ? <ErrorText text={error} /> : null}
       {stats ? (
         <View style={styles.row}>

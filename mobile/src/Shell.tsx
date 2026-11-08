@@ -5,36 +5,42 @@ import { AnnouncementsScreen } from "./screens/AnnouncementsScreen";
 import { CalendarScreen } from "./screens/CalendarScreen";
 import { TuitionScreen } from "./screens/TuitionScreen";
 import { StudyScreen } from "./screens/StudyScreen";
-import { AttendanceScreen } from "./screens/AttendanceScreen";
+import { ClassScreen } from "./screens/ClassScreen";
+import { ComposeScreen } from "./screens/ComposeScreen";
+import { MoreScreen } from "./screens/MoreScreen";
 import { theme } from "./theme";
 
 const TABS = [
   { id: "home", label: "خانه" },
+  { id: "class", label: "کلاس" },
   { id: "news", label: "اطلاعیه" },
-  { id: "cal", label: "تقویم" },
-  { id: "att", label: "حضور" },
   { id: "fee", label: "شهریه" },
-  { id: "study", label: "کارنامه" },
+  { id: "more", label: "بیشتر" },
 ] as const;
 
 export function Shell({ onOut }: { onOut: () => void }) {
   const [tab, setTab] = useState<(typeof TABS)[number]["id"]>("home");
+  const [compose, setCompose] = useState(false);
 
   return (
     <View style={styles.root}>
       <View style={styles.body}>
         {tab === "home" ? <HomeScreen onOut={onOut} /> : null}
-        {tab === "news" ? <AnnouncementsScreen /> : null}
-        {tab === "cal" ? <CalendarScreen /> : null}
-        {tab === "att" ? <AttendanceScreen /> : null}
+        {tab === "class" ? <ClassScreen /> : null}
+        {tab === "news" ? (compose ? <ComposeScreen /> : <AnnouncementsScreen />) : null}
         {tab === "fee" ? <TuitionScreen /> : null}
-        {tab === "study" ? <StudyScreen /> : null}
+        {tab === "more" ? <MoreScreen /> : null}
       </View>
+      {tab === "news" ? (
+        <Pressable style={styles.fab} onPress={() => setCompose((v) => !v)}>
+          <Text style={styles.fabText}>{compose ? "لیست" : "جدید"}</Text>
+        </Pressable>
+      ) : null}
       <View style={styles.bar}>
         {TABS.map((t) => {
           const on = tab === t.id;
           return (
-            <Pressable key={t.id} onPress={() => setTab(t.id)} style={styles.tab}>
+            <Pressable key={t.id} onPress={() => { setTab(t.id); setCompose(false); }} style={styles.tab}>
               <View style={on ? styles.pill : undefined}>
                 <Text style={on ? styles.on : styles.off}>{t.label}</Text>
               </View>
@@ -56,10 +62,11 @@ const styles = StyleSheet.create({
     borderColor: theme.line,
     paddingTop: 8,
     paddingBottom: 16,
-    paddingHorizontal: 4,
   },
   tab: { flex: 1, alignItems: "center" },
-  pill: { backgroundColor: "#E7F4F1", borderRadius: 999, paddingHorizontal: 8, paddingVertical: 6 },
-  on: { color: theme.tealDark, fontWeight: "800", fontSize: 11 },
-  off: { color: "#8AA09C", fontSize: 11, paddingVertical: 6 },
+  pill: { backgroundColor: "#E7F4F1", borderRadius: 999, paddingHorizontal: 10, paddingVertical: 6 },
+  on: { color: theme.tealDark, fontWeight: "800", fontSize: 12 },
+  off: { color: "#8AA09C", fontSize: 12, paddingVertical: 6 },
+  fab: { position: "absolute", left: 16, bottom: 78, backgroundColor: theme.sun, borderRadius: 999, paddingHorizontal: 16, paddingVertical: 10 },
+  fabText: { fontWeight: "800", color: theme.tealDark },
 });
