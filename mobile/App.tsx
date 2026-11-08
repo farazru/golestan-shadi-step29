@@ -3,7 +3,7 @@ import { SafeAreaView, StyleSheet } from "react-native";
 import { StatusBar } from "expo-status-bar";
 import { session } from "./src/api";
 import { LoginScreen } from "./src/screens/LoginScreen";
-import { HomeScreen } from "./src/screens/HomeScreen";
+import { Shell } from "./src/Shell";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -21,7 +21,7 @@ export default function App() {
   return (
     <SafeAreaView style={styles.root}>
       <StatusBar style="dark" />
-      {inApp ? <HomeScreen onOut={() => setInApp(false)} /> : <LoginScreen onDone={() => setInApp(true)} />}
+      {inApp ? <Shell onOut={() => setInApp(false)} /> : <LoginScreen onDone={() => setInApp(true)} />}
     </SafeAreaView>
   );
 }
