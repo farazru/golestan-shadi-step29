@@ -1,0 +1,27 @@
+{
+  "expo": {
+    "name": "گلستان شادی",
+    "slug": "golestan-shadi",
+    "scheme": "golestanshadi",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "icon": "../public/logo.png",
+    "splash": {
+      "backgroundColor": "#fffdf6"
+    },
+    "android": {
+      "package": "ir.golestanshadi.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f5c4c"
+      }
+    },
+    "ios": {
+      "bundleIdentifier": "ir.golestanshadi.app",
+      "supportsTablet": true
+    },
+    "extra": {
+      "apiUrl": "http://10.0.2.2:8080"
+    }
+  }
+}
