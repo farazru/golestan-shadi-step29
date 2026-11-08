@@ -1,7 +1,11 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
-// Point this at the live school site. The app is a native shell around that site.
+// Production: https://golestanshadi.ir
+// Test before the site is live:
+//   CAPACITOR_SERVER_URL=http://10.0.2.2:8080 npx cap sync android   (Android emulator → your PC)
+//   CAPACITOR_SERVER_URL=http://192.168.1.20:8080 npx cap sync android (phone on same Wi‑Fi)
 const serverUrl = process.env.CAPACITOR_SERVER_URL || "https://golestanshadi.ir";
+const isLocal = serverUrl.startsWith("http://");
 
 const config: CapacitorConfig = {
   appId: "ir.golestanshadi.app",
@@ -9,11 +13,11 @@ const config: CapacitorConfig = {
   webDir: "public",
   server: {
     url: serverUrl,
-    cleartext: false,
-    androidScheme: "https",
+    cleartext: isLocal,
+    androidScheme: isLocal ? "http" : "https",
   },
   android: {
-    allowMixedContent: false,
+    allowMixedContent: isLocal,
   },
   plugins: {
     SplashScreen: {
