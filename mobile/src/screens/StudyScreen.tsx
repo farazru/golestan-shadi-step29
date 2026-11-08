@@ -1,56 +1,47 @@
 import { useEffect, useState } from "react";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text } from "react-native";
 import { api } from "../api";
+import { theme } from "../theme";
+import { Card, Empty, ErrorText, Screen } from "../ui";
 
-type Exam = { id: number; title: string; day?: string; courseId?: number };
-type Card = { id: number; title: string; fileName?: string };
+type Exam = { id: number; title: string; day?: string };
+type Item = { id: number; title: string };
 
 export function StudyScreen() {
   const [exams, setExams] = useState<Exam[]>([]);
-  const [cards, setCards] = useState<Card[]>([]);
+  const [cards, setCards] = useState<Item[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    api("/api/exams")
-      .then((d) => setExams((d as { exams?: Exam[] }).exams ?? []))
-      .catch((e) => setError(e.message));
-    api("/api/report-cards")
-      .then((d) => setCards((d as { items?: Card[] }).items ?? []))
-      .catch(() => {});
+    api("/api/exams").then((d) => setExams((d as { exams?: Exam[] }).exams ?? [])).catch((e) => setError(e.message));
+    api("/api/report-cards").then((d) => setCards((d as { items?: Item[] }).items ?? [])).catch(() => {});
   }, []);
 
   return (
-    <ScrollView style={styles.page} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>امتحان و کارنامه</Text>
-      {error ? <Text style={styles.error}>{error}</Text> : null}
+    <Screen title="امتحان و کارنامه" subtitle="برنامه و فایل‌های دفتر">
+      {error ? <ErrorText text={error} /> : null}
       <Text style={styles.section}>امتحان‌ها</Text>
-      {exams.length === 0 ? <Text style={styles.empty}>امتحانی ثبت نشده.</Text> : null}
+      {exams.length === 0 ? <Empty text="امتحانی ثبت نشده." /> : null}
       {exams.map((e) => (
-        <View key={e.id} style={styles.card}>
-          <Text style={styles.cardTitle}>{e.title}</Text>
+        <Card key={e.id}>
+          <Text style={styles.title}>{e.title}</Text>
           {e.day ? <Text style={styles.meta}>{e.day}</Text> : null}
-        </View>
+        </Card>
       ))}
       <Text style={styles.section}>کارنامه‌ها</Text>
-      {cards.length === 0 ? <Text style={styles.empty}>کارنامه‌ای بارگذاری نشده.</Text> : null}
+      {cards.length === 0 ? <Empty text="کارنامه‌ای بارگذاری نشده." /> : null}
       {cards.map((c) => (
-        <View key={c.id} style={styles.card}>
-          <Text style={styles.cardTitle}>{c.title}</Text>
+        <Card key={c.id}>
+          <Text style={styles.title}>{c.title}</Text>
           <Text style={styles.meta}>دانلود از سایت مدرسه</Text>
-        </View>
+        </Card>
       ))}
-    </ScrollView>
+    </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  page: { flex: 1, backgroundColor: "#fffdf6" },
-  content: { padding: 20, paddingTop: 56 },
-  title: { fontSize: 22, fontWeight: "800", color: "#0f5c4c", textAlign: "right", marginBottom: 12 },
-  section: { marginTop: 8, marginBottom: 8, fontWeight: "800", textAlign: "right" },
-  card: { backgroundColor: "#fff", borderRadius: 16, padding: 14, marginBottom: 10, borderWidth: 1, borderColor: "#d9e7e5" },
-  cardTitle: { fontWeight: "800", textAlign: "right" },
-  meta: { marginTop: 4, textAlign: "right", color: "#4b635f" },
-  empty: { textAlign: "right", color: "#4b635f", marginBottom: 8 },
-  error: { color: "#b42318", textAlign: "right", marginBottom: 8 },
+  section: { marginTop: 4, marginBottom: 8, fontWeight: "800", textAlign: "right", color: theme.ink },
+  title: { fontWeight: "800", textAlign: "right", color: theme.ink },
+  meta: { marginTop: 4, textAlign: "right", color: theme.muted },
 });

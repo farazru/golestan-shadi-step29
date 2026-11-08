@@ -4,6 +4,7 @@ import { StatusBar } from "expo-status-bar";
 import { session } from "./src/api";
 import { LoginScreen } from "./src/screens/LoginScreen";
 import { Shell } from "./src/Shell";
+import { theme } from "./src/theme";
 
 export default function App() {
   const [ready, setReady] = useState(false);
@@ -27,6 +28,6 @@ export default function App() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#fffdf6" },
-  boot: { flex: 1, backgroundColor: "#fffdf6" },
+  root: { flex: 1, backgroundColor: theme.bg },
+  boot: { flex: 1, backgroundColor: theme.tealDark },
 });

@@ -6,6 +6,7 @@ import { CalendarScreen } from "./screens/CalendarScreen";
 import { TuitionScreen } from "./screens/TuitionScreen";
 import { StudyScreen } from "./screens/StudyScreen";
 import { AttendanceScreen } from "./screens/AttendanceScreen";
+import { theme } from "./theme";
 
 const TABS = [
   { id: "home", label: "خانه" },
@@ -30,28 +31,35 @@ export function Shell({ onOut }: { onOut: () => void }) {
         {tab === "study" ? <StudyScreen /> : null}
       </View>
       <View style={styles.bar}>
-        {TABS.map((t) => (
-          <Pressable key={t.id} onPress={() => setTab(t.id)} style={styles.tab}>
-            <Text style={tab === t.id ? styles.on : styles.off}>{t.label}</Text>
-          </Pressable>
-        ))}
+        {TABS.map((t) => {
+          const on = tab === t.id;
+          return (
+            <Pressable key={t.id} onPress={() => setTab(t.id)} style={styles.tab}>
+              <View style={on ? styles.pill : undefined}>
+                <Text style={on ? styles.on : styles.off}>{t.label}</Text>
+              </View>
+            </Pressable>
+          );
+        })}
       </View>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: "#fffdf6" },
+  root: { flex: 1, backgroundColor: theme.bg },
   body: { flex: 1 },
   bar: {
     flexDirection: "row-reverse",
-    borderTopWidth: 1,
-    borderColor: "#d9e7e5",
     backgroundColor: "#fff",
-    paddingVertical: 10,
-    paddingBottom: 18,
+    borderTopWidth: 1,
+    borderColor: theme.line,
+    paddingTop: 8,
+    paddingBottom: 16,
+    paddingHorizontal: 4,
   },
   tab: { flex: 1, alignItems: "center" },
-  on: { color: "#0f5c4c", fontWeight: "800", fontSize: 12 },
-  off: { color: "#7b8f8c", fontSize: 12 },
+  pill: { backgroundColor: "#E7F4F1", borderRadius: 999, paddingHorizontal: 8, paddingVertical: 6 },
+  on: { color: theme.tealDark, fontWeight: "800", fontSize: 11 },
+  off: { color: "#8AA09C", fontSize: 11, paddingVertical: 6 },
 });
